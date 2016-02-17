@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3001A5AB1C74755400D70107 /* ShaderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3001A5AA1C74755400D70107 /* ShaderHelper.m */; };
+		3001A5AB1C74755400D70107 /* 	.m in Sources */ = {isa = PBXBuildFile; fileRef = 3001A5AA1C74755400D70107 /* 	.m */; };
 		3086C2D91C722809004D96D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3086C2D81C722809004D96D7 /* main.m */; };
 		3086C2DC1C722809004D96D7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3086C2DB1C722809004D96D7 /* AppDelegate.m */; };
 		3086C2DE1C722809004D96D7 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 3086C2DD1C722809004D96D7 /* Shader.fsh */; };
@@ -30,8 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3001A5A91C74755400D70107 /* ShaderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderHelper.h; sourceTree = "<group>"; };
-		3001A5AA1C74755400D70107 /* ShaderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShaderHelper.m; sourceTree = "<group>"; };
+		3001A5A91C74755400D70107 /* GLShaderMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLShaderMgr.h; sourceTree = "<group>"; };
+		3001A5AA1C74755400D70107 /* 	.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "	.m"; sourceTree = "<group>"; };
 		3086C2D41C722809004D96D7 /* iosgl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosgl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3086C2D81C722809004D96D7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3086C2DA1C722809004D96D7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -94,8 +94,8 @@
 				3086C2DF1C722809004D96D7 /* Shader.vsh */,
 				3086C2E11C722809004D96D7 /* GameViewController.h */,
 				3086C2E21C722809004D96D7 /* GameViewController.m */,
-				3001A5A91C74755400D70107 /* ShaderHelper.h */,
-				3001A5AA1C74755400D70107 /* ShaderHelper.m */,
+				3001A5A91C74755400D70107 /* GLShaderMgr.h */,
+				3001A5AA1C74755400D70107 /* 	.m */,
 				3086C2E41C722809004D96D7 /* Main.storyboard */,
 				3086C2E71C722809004D96D7 /* Assets.xcassets */,
 				3086C2E91C722809004D96D7 /* LaunchScreen.storyboard */,
@@ -226,7 +226,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3001A5AB1C74755400D70107 /* ShaderHelper.m in Sources */,
+				3001A5AB1C74755400D70107 /* 	.m in Sources */,
 				3086C2DC1C722809004D96D7 /* AppDelegate.m in Sources */,
 				3086C2E31C722809004D96D7 /* GameViewController.m in Sources */,
 				3086C2D91C722809004D96D7 /* main.m in Sources */,

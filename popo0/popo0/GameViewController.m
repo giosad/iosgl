@@ -7,7 +7,7 @@
 //
 
 #import "GameViewController.h"
-#import "ShaderHelper.h"
+#import "GLShaderMgr.h"
 #import <OpenGLES/ES2/glext.h>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -85,7 +85,7 @@ GLfloat gCubeVertexData[216] =
     GLuint _vertexArray;
     GLuint _vertexBuffer;
 }
-@property (strong, nonatomic) ShaderHelper *shaderHelper;
+@property (strong, nonatomic) GLShaderMgr *shaderHelper;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKBaseEffect *effect;
 

@@ -4,7 +4,7 @@
 #import <OpenGLES/ES2/glext.h>
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ShaderHelper : NSObject
+@interface GLShaderMgr : NSObject
 - (instancetype)init;
 - (BOOL)deleteProgram;
 @property (nonatomic, readonly) GLuint program;
