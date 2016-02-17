@@ -79,8 +79,6 @@ GLfloat gCubeVertexData[216] =
 @property (strong, nonatomic) GLShaderMgr *shaderHelper;
 @property (strong, nonatomic) EAGLContext *context;
 
-- (void)setupGL;
-- (void)tearDownGL;
 @end
 
 @implementation GameViewController
@@ -98,7 +96,6 @@ GLfloat gCubeVertexData[216] =
   GLKView *view = (GLKView *)self.view;
   view.context = self.context;
   view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-  
   [self setupGL];
 }
 
@@ -129,13 +126,14 @@ GLfloat gCubeVertexData[216] =
   // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)prefersStatusBarHidden {
-  return YES;
-}
+
+
 
 - (void)setupGL
 {
   [EAGLContext setCurrentContext:self.context];
+  
+  
   self.shaderHelper = [[GLShaderMgr alloc] init];
   [self.shaderHelper loadShadersWithName:@"Shader"];
   _glmodelViewProjectionMatrixUniform = [self.shaderHelper getUniformLocation:@"modelViewProjectionMatrix"];
@@ -147,20 +145,25 @@ GLfloat gCubeVertexData[216] =
   glEnable(GL_DEPTH_TEST);
   
   
-  //VAO
+  //create and bind VAO
   glGenVertexArraysOES(1, &_vertexArray);
   glBindVertexArrayOES(_vertexArray);
   
-  //VBO
+  //create and bind VBO
   glGenBuffers(1, &_vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+  
+  //point VBO to vertex data
   glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
   
+  //attrib config for the bound VBO
   glEnableVertexAttribArray(_glPositionsAttrib);
   glVertexAttribPointer(_glPositionsAttrib, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+  
   glEnableVertexAttribArray(_glNormalsAttrib);
   glVertexAttribPointer(_glNormalsAttrib, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
   
+  //unbind VAO
   glBindVertexArrayOES(0);
 }
 
@@ -182,14 +185,14 @@ GLfloat gCubeVertexData[216] =
   float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
   GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
   
-  GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -4.0f);
-//  baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
   
-  // Compute the model view matrix for the object rendered with ES2
-  GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.5f);
-  modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
-  modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
-  modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+  // Compute the model matrix for the object
+  GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
+  modelMatrix = GLKMatrix4Rotate(modelMatrix, _rotation, 1.0f, 1.0f, 1.0f);
+  
+  //apply camera view mtx
+  GLKMatrix4 viewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -6.0f);
+  GLKMatrix4 modelViewMatrix = GLKMatrix4Multiply(viewMatrix, modelMatrix);
   
   _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
   
@@ -197,6 +200,8 @@ GLfloat gCubeVertexData[216] =
   
   _rotation += self.timeSinceLastUpdate * 0.5f;
 }
+
+
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
