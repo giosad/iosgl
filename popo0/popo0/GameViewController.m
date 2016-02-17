@@ -19,6 +19,10 @@ enum
     UNIFORM_NORMAL_MATRIX,
     NUM_UNIFORMS
 };
+
+const char* uniformNames[NUM_UNIFORMS] = {"modelViewProjectionMatrix",
+                            "normalMatrix"};
+
 GLint uniforms[NUM_UNIFORMS];
 
 // Attribute index.
@@ -28,6 +32,11 @@ enum
     ATTRIB_NORMAL,
     NUM_ATTRIBUTES
 };
+
+const char* uniformNames[NUM_UNIFORMS] = {"modelViewProjectionMatrix",
+  "normalMatrix"};
+
+GLint attribs[NUM_ATTRIBUTES];
 
 GLfloat gCubeVertexData[216] = 
 {
@@ -87,7 +96,6 @@ GLfloat gCubeVertexData[216] =
 }
 @property (strong, nonatomic) GLShaderMgr *shaderHelper;
 @property (strong, nonatomic) EAGLContext *context;
-@property (strong, nonatomic) GLKBaseEffect *effect;
 
 - (void)setupGL;
 - (void)tearDownGL;
@@ -147,7 +155,7 @@ GLfloat gCubeVertexData[216] =
 {
     [EAGLContext setCurrentContext:self.context];
     
-    [[self.shaderHelper loadShaders];
+    [self.shaderHelper loadShadersByName:@"Shader"];
     
     glEnable(GL_DEPTH_TEST);
     
@@ -158,10 +166,10 @@ GLfloat gCubeVertexData[216] =
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
     
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+    glEnableVertexAttribArray(attribs[ATTRIB_VERTEX]);
+    glVertexAttribPointer(attribs[ATTRIB_VERTEX], 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(attribs[ATTRIB_NORMAL]);
+    glVertexAttribPointer(attribs[ATTRIB_NORMAL], 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
     
     glBindVertexArrayOES(0);
 }
@@ -172,10 +180,8 @@ GLfloat gCubeVertexData[216] =
     
     glDeleteBuffers(1, &_vertexBuffer);
     glDeleteVertexArraysOES(1, &_vertexArray);
-    
-    self.effect = nil;
   
-  [self.shaderHelper deleteProgram];
+    [self.shaderHelper deleteProgram];
 
 }
 
@@ -212,7 +218,7 @@ GLfloat gCubeVertexData[216] =
     glDrawArrays(GL_TRIANGLES, 0, 36);
     
     // Render the object again with ES2
-    glUseProgram(_program);
+    glUseProgram(self.shaderHelper.program);
     
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);

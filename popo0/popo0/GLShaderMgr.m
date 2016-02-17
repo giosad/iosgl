@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark -  OpenGL ES 2 shader compilation
-- (BOOL) deleteProgram {
+- (void) deleteProgram {
   if (self.program) {
     glDeleteProgram(self.program);
     self.program = 0;
