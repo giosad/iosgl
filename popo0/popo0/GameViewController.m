@@ -7,6 +7,7 @@
 //
 
 #import "GameViewController.h"
+#import "ShaderHelper.h"
 #import <OpenGLES/ES2/glext.h>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -81,20 +82,15 @@ GLfloat gCubeVertexData[216] =
     GLKMatrix4 _modelViewProjectionMatrix;
     GLKMatrix3 _normalMatrix;
     float _rotation;
-    
     GLuint _vertexArray;
     GLuint _vertexBuffer;
 }
+@property (strong, nonatomic) ShaderHelper *shaderHelper;
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKBaseEffect *effect;
 
 - (void)setupGL;
 - (void)tearDownGL;
-
-- (BOOL)loadShaders;
-- (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file;
-- (BOOL)linkProgram:(GLuint)prog;
-- (BOOL)validateProgram:(GLuint)prog;
 @end
 
 @implementation GameViewController
@@ -151,7 +147,7 @@ GLfloat gCubeVertexData[216] =
 {
     [EAGLContext setCurrentContext:self.context];
     
-    [self loadShaders];
+    [[self.shaderHelper loadShaders];
     
     glEnable(GL_DEPTH_TEST);
     
@@ -178,11 +174,9 @@ GLfloat gCubeVertexData[216] =
     glDeleteVertexArraysOES(1, &_vertexArray);
     
     self.effect = nil;
-    
-    if (_program) {
-        glDeleteProgram(_program);
-        _program = 0;
-    }
+  
+  [self.shaderHelper deleteProgram];
+
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods

@@ -11,8 +11,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark -  OpenGL ES 2 shader compilation
+- (BOOL) deleteProgram {
+  if (self.program) {
+    glDeleteProgram(self.program);
+    self.program = 0;
+  }
+}
 
-- (BOOL)loadShaders
+- (BOOL)loadShadersByName:(NSString*)name
 {
   GLuint vertShader, fragShader;
   NSString *vertShaderPathname, *fragShaderPathname;
@@ -21,14 +27,14 @@ NS_ASSUME_NONNULL_BEGIN
   self.program = glCreateProgram();
   
   // Create and compile vertex shader.
-  vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
+  vertShaderPathname = [[NSBundle mainBundle] pathForResource:name ofType:@"vsh"];
   if (![self compileShader:&vertShader type:GL_VERTEX_SHADER file:vertShaderPathname]) {
     NSLog(@"Failed to compile vertex shader");
     return NO;
   }
   
   // Create and compile fragment shader.
-  fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
+  fragShaderPathname = [[NSBundle mainBundle] pathForResource:name ofType:@"fsh"];
   if (![self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:fragShaderPathname]) {
     NSLog(@"Failed to compile fragment shader");
     return NO;
