@@ -12,52 +12,59 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-GLfloat gCubeVertexData[216] =
+
+
+
+GLfloat gCubeVertexAndNormalData[] =
 {
   // Data layout for each line below is:
-  // positionX, positionY, positionZ,     normalX, normalY, normalZ,
-  0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
-  0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-  0.5f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+  // positionX, positionY, positionZ,
+  0.5f, -0.5f, -0.5f,
+  0.5f, 0.5f, -0.5f,
+  0.5f, -0.5f, 0.5f,
+  0.5f, 0.5f, 0.5f,
   
-  0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,
-  
-  -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,
-  
-  -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,
-  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,
-  
-  0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,
-  
-  0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,
-  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
+  -0.5f, -0.5f, -0.5f,
+  -0.5f, 0.5f, -0.5f,
+  -0.5f, -0.5f, 0.5f,
+  -0.5f, 0.5f, 0.5f,
 };
+
+
+GLuint gCubeIndexData[] =
+{
+  // Data layout for each line below is:
+  // triangle indices
+  0, 1, 2,
+  2, 1, 3,
+  
+  1, 5, 3,
+  3, 5, 7,
+  
+  5, 4, 7,
+  7, 4, 6,
+  
+  4, 0, 6,
+  6, 0, 2,
+  
+  3, 7, 2,
+  2, 7, 6,
+  
+  0, 4, 1,
+  1, 4, 5
+};
+
+
+
+//static const GLfloat gCubeVertexAndNormalData[] = {
+//  -1.0f, -1.0f, 0.0f,
+//  1.0f, -1.0f, 0.0f,
+//  -1.0f,  1.0f, 0.0f,
+//  1.0f,  1.0f, 0.0f,
+//};
+//static const GLushort gCubeIndexData[] = {
+//  0, 1, 2,
+//  1, 3, 2 };
 
 @interface GameViewController () {
   
@@ -67,7 +74,9 @@ GLfloat gCubeVertexData[216] =
   float _rotation;
   GLuint _vertexArray;
   GLuint _vertexBuffer;
-  
+  GLuint _indexBuffer;//todo: maybe need to free
+
+
   
   GLuint _glmodelViewProjectionMatrixUniform;
   GLuint _glnormalMatrixUnform;
@@ -154,14 +163,20 @@ GLfloat gCubeVertexData[216] =
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
   
   //point VBO to vertex data
-  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexAndNormalData), gCubeVertexAndNormalData, GL_STATIC_DRAW);
+  
+  
+  glGenBuffers(1, &_indexBuffer);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gCubeIndexData), &gCubeIndexData[0], GL_STATIC_DRAW);
+  
   
   //attrib config for the bound VBO
   glEnableVertexAttribArray(_glPositionsAttrib);
-  glVertexAttribPointer(_glPositionsAttrib, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+  glVertexAttribPointer(_glPositionsAttrib, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
   
   glEnableVertexAttribArray(_glNormalsAttrib);
-  glVertexAttribPointer(_glNormalsAttrib, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+  glVertexAttribPointer(_glNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(0));
   
   //unbind VAO
   glBindVertexArrayOES(0);
@@ -201,7 +216,7 @@ GLfloat gCubeVertexData[216] =
   _rotation += self.timeSinceLastUpdate * 0.5f;
 }
 
-
+#define NELEMENTS(x) (sizeof(x)/sizeof(x[0]))
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
@@ -214,8 +229,15 @@ GLfloat gCubeVertexData[216] =
   
   glUniformMatrix4fv(_glmodelViewProjectionMatrixUniform, 1, 0, _modelViewProjectionMatrix.m);
   glUniformMatrix3fv(_glnormalMatrixUnform, 1, 0, _normalMatrix.m);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+  glDrawElements(GL_TRIANGLES,      // mode
+                 NELEMENTS(gCubeIndexData),    // count
+                 GL_UNSIGNED_INT,   // type
+                 (void*)0           // element array buffer offset
+                 );
   
-  glDrawArrays(GL_TRIANGLES, 0, 36);
+//  glDrawArrays(GL_TRIANGLES, 0, 36);
+
 }
 
 @end
