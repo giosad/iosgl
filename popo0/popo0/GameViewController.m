@@ -12,32 +12,6 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-// Uniform index.
-enum
-{
-  UNIFORM_MODELVIEWPROJECTION_MATRIX,
-  UNIFORM_NORMAL_MATRIX,
-  NUM_UNIFORMS
-};
-
-const char* uniformNames[NUM_UNIFORMS] = {"modelViewProjectionMatrix",
-  "normalMatrix"};
-
-GLint uniforms[NUM_UNIFORMS];
-
-// Attribute index.
-enum
-{
-  ATTRIB_VERTEX,
-  ATTRIB_NORMAL,
-  NUM_ATTRIBUTES
-};
-
-const char* uniformNames[NUM_UNIFORMS] = {"modelViewProjectionMatrix",
-  "normalMatrix"};
-
-GLint attribs[NUM_ATTRIBUTES];
-
 GLfloat gCubeVertexData[216] =
 {
   // Data layout for each line below is:
@@ -93,6 +67,14 @@ GLfloat gCubeVertexData[216] =
   float _rotation;
   GLuint _vertexArray;
   GLuint _vertexBuffer;
+  
+  
+  GLuint _glmodelViewProjectionMatrixUniform;
+  GLuint _glnormalMatrixUnform;
+  
+  GLuint _glPositionsAttrib;
+  GLuint _glNormalsAttrib;
+  
 }
 @property (strong, nonatomic) GLShaderMgr *shaderHelper;
 @property (strong, nonatomic) EAGLContext *context;
@@ -154,22 +136,30 @@ GLfloat gCubeVertexData[216] =
 - (void)setupGL
 {
   [EAGLContext setCurrentContext:self.context];
+  self.shaderHelper = [[GLShaderMgr alloc] init];
+  [self.shaderHelper loadShadersWithName:@"Shader"];
+  _glmodelViewProjectionMatrixUniform = [self.shaderHelper getUniformLocation:@"modelViewProjectionMatrix"];
+  _glnormalMatrixUnform = [self.shaderHelper getUniformLocation:@"normalMatrix"];
+  _glNormalsAttrib = [self.shaderHelper getAttribLocation:@"normal"];
+  _glPositionsAttrib = [self.shaderHelper getAttribLocation:@"position"];
   
-  [self.shaderHelper loadShadersByName:@"Shader"];
   
   glEnable(GL_DEPTH_TEST);
   
+  
+  //VAO
   glGenVertexArraysOES(1, &_vertexArray);
   glBindVertexArrayOES(_vertexArray);
   
+  //VBO
   glGenBuffers(1, &_vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
   
-  glEnableVertexAttribArray(attribs[ATTRIB_VERTEX]);
-  glVertexAttribPointer(attribs[ATTRIB_VERTEX], 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-  glEnableVertexAttribArray(attribs[ATTRIB_NORMAL]);
-  glVertexAttribPointer(attribs[ATTRIB_NORMAL], 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+  glEnableVertexAttribArray(_glPositionsAttrib);
+  glVertexAttribPointer(_glPositionsAttrib, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+  glEnableVertexAttribArray(_glNormalsAttrib);
+  glVertexAttribPointer(_glNormalsAttrib, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
   
   glBindVertexArrayOES(0);
 }
@@ -193,7 +183,7 @@ GLfloat gCubeVertexData[216] =
   GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
   
   GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -4.0f);
-  baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
+//  baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
   
   // Compute the model view matrix for the object rendered with ES2
   GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.5f);
@@ -214,14 +204,11 @@ GLfloat gCubeVertexData[216] =
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
   glBindVertexArrayOES(_vertexArray);
-  
-  glDrawArrays(GL_TRIANGLES, 0, 36);
-  
-  // Render the object again with ES2
+
   glUseProgram(self.shaderHelper.program);
   
-  glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
-  glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
+  glUniformMatrix4fv(_glmodelViewProjectionMatrixUniform, 1, 0, _modelViewProjectionMatrix.m);
+  glUniformMatrix3fv(_glnormalMatrixUnform, 1, 0, _normalMatrix.m);
   
   glDrawArrays(GL_TRIANGLES, 0, 36);
 }

@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark -  OpenGL ES 2 shader compilation
+
 - (void) deleteProgram {
   if (self.program) {
     glDeleteProgram(self.program);
@@ -18,8 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-- (BOOL)loadShadersByName:(NSString*)name
-{
+
+- (BOOL)loadShadersWithName:(NSString*)name{
   GLuint vertShader, fragShader;
   NSString *vertShaderPathname, *fragShaderPathname;
   
@@ -46,11 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
   // Attach fragment shader to program.
   glAttachShader(self.program, fragShader);
   
-  // Bind attribute locations.
-  // This needs to be done prior to linking.
-  glBindAttribLocation(self.program, GLKVertexAttribPosition, "position");
-  glBindAttribLocation(self.program, GLKVertexAttribNormal, "normal");
-  
+
   // Link program.
   if (![self linkProgram:self.program]) {
     NSLog(@"Failed to link program: %d", self.program);
@@ -71,10 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
     return NO;
   }
   
-  // Get uniform locations.
-  uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(self.program, "modelViewProjectionMatrix");
-  uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(self.program, "normalMatrix");
-  
+
   // Release vertex and fragment shaders.
   if (vertShader) {
     glDetachShader(self.program, vertShader);
@@ -86,6 +80,14 @@ NS_ASSUME_NONNULL_BEGIN
   }
   
   return YES;
+}
+
+- (GLuint) getUniformLocation:(NSString*)uniformName{
+  return glGetUniformLocation(self.program, [uniformName UTF8String]);
+}
+
+- (GLuint) getAttribLocation:(NSString*)attribName{
+  return glGetAttribLocation(self.program, [attribName UTF8String]);
 }
 
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file

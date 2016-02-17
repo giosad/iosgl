@@ -7,8 +7,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface GLShaderMgr : NSObject
 //- (instancetype)init;
 - (void)deleteProgram;
-- (BOOL)loadShadersByName:(NSString*)name;
-
+- (BOOL)loadShadersWithName:(NSString*)name;
+- (GLuint) getUniformLocation:(NSString*)uniformName;
+- (GLuint) getAttribLocation:(NSString*)attribName;
 @property (nonatomic, readonly) GLuint program;
 
 @end
