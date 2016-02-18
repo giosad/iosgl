@@ -15,92 +15,34 @@
 
 
 
-GLfloat gCubeVertexAndNormalData[] =
+GLfloat gCubeVertexTexCoordData[] =
 {
   // Data layout for each line below is:
-  // positionX, positionY, positionZ,
-  0.5f, -0.5f, -0.5f,
-  0.5f, 0.5f, -0.5f,
-  0.5f, -0.5f, 0.5f,
-  0.5f, 0.5f, 0.5f,
+  // positionX, positionY, tex-x coord, tex-y coord
+  -0.5f, -0.5f, 0.0f, 1.0f,
+  -0.5f,  0.5f, 0.0f, 0.0f,
+   0.5f,  0.5f, 1.0f, 0.0f,
   
-  -0.5f, -0.5f, -0.5f,
-  -0.5f, 0.5f, -0.5f,
-  -0.5f, -0.5f, 0.5f,
-  -0.5f, 0.5f, 0.5f,
-};
-
-
-GLfloat gCubeColorsData[] =
-{
-  // Data layout for each line below is:
-  // positionX, positionY, positionZ,
-  1.0f, 0.0f, 0.0f,
-  0.0f, 1.0f, 0.0f,
-  0.0f, 0.0f, 1.0f,
-  1.0f, 0.0f, 1.0f,
-
-  1.0f, 0.0f, 0.0f,
-  0.0f, 1.0f, 0.0f,
-  0.0f, 0.0f, 1.0f,
-  1.0f, 0.0f, 1.0f,
-};
-
-
-GLuint gCubeIndexData[] =
-{
-  // Data layout for each line below is:
-  // triangle indices
-  0, 1, 2,
-  2, 1, 3,
-  
-  1, 5, 3,
-  3, 5, 7,
-  
-  5, 4, 7,
-  7, 4, 6,
-  
-  4, 0, 6,
-  6, 0, 2,
-  
-  3, 7, 2,
-  2, 7, 6,
-  
-  0, 4, 1,
-  1, 4, 5
+  -0.5f, -0.5f, 0.0f, 1.0f,
+   0.5f,  0.5f, 1.0f, 0.0f,
+   0.5f, -0.5f, 1.0f, 1.0f,
 };
 
 
 
-//static const GLfloat gCubeVertexAndNormalData[] = {
-//  -1.0f, -1.0f, 0.0f,
-//  1.0f, -1.0f, 0.0f,
-//  -1.0f,  1.0f, 0.0f,
-//  1.0f,  1.0f, 0.0f,
-//};
-//static const GLushort gCubeIndexData[] = {
-//  0, 1, 2,
-//  1, 3, 2 };
+
 
 @interface GameViewController () {
   
   
   GLKMatrix4 _modelViewProjectionMatrix;
-  GLKMatrix3 _normalMatrix;
-  float _rotation;
+
   GLuint _vertexArray;
   GLuint _vertexBuffer;
-  GLuint _indexBuffer;//todo: maybe need to free
-  GLuint _colorsBuffer;//todo: maybe need to free
 
-
-  
   GLuint _glmodelViewProjectionMatrixUniform;
-  GLuint _glnormalMatrixUnform;
-  
   GLuint _glPositionsAttrib;
-  GLuint _glNormalsAttrib;
-  GLuint _glColorsAttrib;
+  GLuint _glTexCoordAttrib;
   
 }
 @property (strong, nonatomic) GLShaderMgr *shaderHelper;
@@ -164,13 +106,8 @@ GLuint gCubeIndexData[] =
   self.shaderHelper = [[GLShaderMgr alloc] init];
   [self.shaderHelper loadShadersWithName:@"Shader"];
   _glmodelViewProjectionMatrixUniform = [self.shaderHelper getUniformLocation:@"modelViewProjectionMatrix"];
-  _glnormalMatrixUnform = [self.shaderHelper getUniformLocation:@"normalMatrix"];
-  _glNormalsAttrib = [self.shaderHelper getAttribLocation:@"normal"];
   _glPositionsAttrib = [self.shaderHelper getAttribLocation:@"position"];
-  _glColorsAttrib = [self.shaderHelper getAttribLocation:@"diffColor"];
-  
-  
-  glEnable(GL_DEPTH_TEST);
+  _glTexCoordAttrib = [self.shaderHelper getAttribLocation:@"texCoord"];
   
   
   //create and bind VAO
@@ -181,40 +118,22 @@ GLuint gCubeIndexData[] =
   glGenBuffers(1, &_vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
   
-  //point VBO to vertex and normals data
-  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexAndNormalData), gCubeVertexAndNormalData, GL_STATIC_DRAW);
+  //point VBO to vertex and tex coords data
+  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexTexCoordData), gCubeVertexTexCoordData, GL_STATIC_DRAW);
   
 
   //attrib config for the bound VBO
   glEnableVertexAttribArray(_glPositionsAttrib);
-  glVertexAttribPointer(_glPositionsAttrib, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-  
-  glEnableVertexAttribArray(_glNormalsAttrib);
-  glVertexAttribPointer(_glNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(0));
-  
-  
-  //create and bind color VBO
-  glGenBuffers(1, &_colorsBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, _colorsBuffer);
-  
-  //point VBO to vertex data
-  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeColorsData), gCubeColorsData, GL_STATIC_DRAW);
-  
-  //attrib config for the bound VBO
-  glEnableVertexAttribArray(_glColorsAttrib);
-  glVertexAttribPointer(_glColorsAttrib, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(0));
+  glVertexAttribPointer(_glPositionsAttrib, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
 
-  
-  
-  //indices
-  glGenBuffers(1, &_indexBuffer);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gCubeIndexData), &gCubeIndexData[0], GL_STATIC_DRAW);
-  
-  
+
+  //attrib config for the bound VBO
+//  glEnableVertexAttribArray(_glTexCoordAttrib);
+//  glVertexAttribPointer(_glTexCoordAttrib, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(2*sizeof(GLfloat)));
+//
+//  
   //unbind VAO
-  glBindVertexArrayOES(0);
-}
+  glBindVertexArrayOES(0);}
 
 - (void)tearDownGL
 {
@@ -232,22 +151,19 @@ GLuint gCubeIndexData[] =
 - (void)update
 {
   float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
-  GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
+  GLKMatrix4 projectionMatrix = GLKMatrix4MakeOrtho(-10, 10, -10, 10, -1, 1);
   
   
   // Compute the model matrix for the object
-  GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
-  modelMatrix = GLKMatrix4Rotate(modelMatrix, _rotation, 1.0f, 1.0f, 1.0f);
+  GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
   
   //apply camera view mtx
-  GLKMatrix4 viewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -6.0f);
+  GLKMatrix4 viewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -0.5f);
   GLKMatrix4 modelViewMatrix = GLKMatrix4Multiply(viewMatrix, modelMatrix);
   
-  _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
   
   _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
   
-  _rotation += self.timeSinceLastUpdate * 0.5f;
 }
 
 #define NELEMENTS(x) (sizeof(x)/sizeof(x[0]))
@@ -262,15 +178,10 @@ GLuint gCubeIndexData[] =
   glUseProgram(self.shaderHelper.program);
   
   glUniformMatrix4fv(_glmodelViewProjectionMatrixUniform, 1, 0, _modelViewProjectionMatrix.m);
-  glUniformMatrix3fv(_glnormalMatrixUnform, 1, 0, _normalMatrix.m);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-  glDrawElements(GL_TRIANGLES,      // mode
-                 NELEMENTS(gCubeIndexData),    // count
-                 GL_UNSIGNED_INT,   // type
-                 (void*)0           // element array buffer offset
-                 );
+
   
-//  glDrawArrays(GL_TRIANGLES, 0, 36);
+//  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
 
 }
 
