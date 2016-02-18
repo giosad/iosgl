@@ -31,6 +31,22 @@ GLfloat gCubeVertexAndNormalData[] =
 };
 
 
+GLfloat gCubeColorsData[] =
+{
+  // Data layout for each line below is:
+  // positionX, positionY, positionZ,
+  1.0f, 0.0f, 0.0f,
+  0.0f, 1.0f, 0.0f,
+  0.0f, 0.0f, 1.0f,
+  1.0f, 0.0f, 1.0f,
+
+  1.0f, 0.0f, 0.0f,
+  0.0f, 1.0f, 0.0f,
+  0.0f, 0.0f, 1.0f,
+  1.0f, 0.0f, 1.0f,
+};
+
+
 GLuint gCubeIndexData[] =
 {
   // Data layout for each line below is:
@@ -75,6 +91,7 @@ GLuint gCubeIndexData[] =
   GLuint _vertexArray;
   GLuint _vertexBuffer;
   GLuint _indexBuffer;//todo: maybe need to free
+  GLuint _colorsBuffer;//todo: maybe need to free
 
 
   
@@ -83,6 +100,7 @@ GLuint gCubeIndexData[] =
   
   GLuint _glPositionsAttrib;
   GLuint _glNormalsAttrib;
+  GLuint _glColorsAttrib;
   
 }
 @property (strong, nonatomic) GLShaderMgr *shaderHelper;
@@ -149,6 +167,7 @@ GLuint gCubeIndexData[] =
   _glnormalMatrixUnform = [self.shaderHelper getUniformLocation:@"normalMatrix"];
   _glNormalsAttrib = [self.shaderHelper getAttribLocation:@"normal"];
   _glPositionsAttrib = [self.shaderHelper getAttribLocation:@"position"];
+  _glColorsAttrib = [self.shaderHelper getAttribLocation:@"diffColor"];
   
   
   glEnable(GL_DEPTH_TEST);
@@ -162,21 +181,36 @@ GLuint gCubeIndexData[] =
   glGenBuffers(1, &_vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
   
-  //point VBO to vertex data
+  //point VBO to vertex and normals data
   glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexAndNormalData), gCubeVertexAndNormalData, GL_STATIC_DRAW);
   
-  
-  glGenBuffers(1, &_indexBuffer);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gCubeIndexData), &gCubeIndexData[0], GL_STATIC_DRAW);
-  
-  
+
   //attrib config for the bound VBO
   glEnableVertexAttribArray(_glPositionsAttrib);
   glVertexAttribPointer(_glPositionsAttrib, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
   
   glEnableVertexAttribArray(_glNormalsAttrib);
   glVertexAttribPointer(_glNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(0));
+  
+  
+  //create and bind color VBO
+  glGenBuffers(1, &_colorsBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, _colorsBuffer);
+  
+  //point VBO to vertex data
+  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeColorsData), gCubeColorsData, GL_STATIC_DRAW);
+  
+  //attrib config for the bound VBO
+  glEnableVertexAttribArray(_glColorsAttrib);
+  glVertexAttribPointer(_glColorsAttrib, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(0));
+
+  
+  
+  //indices
+  glGenBuffers(1, &_indexBuffer);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gCubeIndexData), &gCubeIndexData[0], GL_STATIC_DRAW);
+  
   
   //unbind VAO
   glBindVertexArrayOES(0);
