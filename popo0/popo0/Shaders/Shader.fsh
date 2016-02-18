@@ -7,7 +7,7 @@
 //
 
 varying lowp vec4 colorVarying;
-
+uniform sampler2D img;
 void main()
 {
     gl_FragColor = colorVarying;

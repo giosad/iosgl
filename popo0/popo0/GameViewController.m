@@ -15,15 +15,12 @@
 
 
 
-GLfloat gCubeVertexTexCoordData[] =
+GLfloat gVertexTexCoordData[] =
 {
   // Data layout for each line below is:
   // positionX, positionY, tex-x coord, tex-y coord
   -0.5f, -0.5f, 0.0f, 1.0f,
   -0.5f,  0.5f, 0.0f, 0.0f,
-   0.5f,  0.5f, 1.0f, 0.0f,
-  
-  -0.5f, -0.5f, 0.0f, 1.0f,
    0.5f,  0.5f, 1.0f, 0.0f,
    0.5f, -0.5f, 1.0f, 1.0f,
 };
@@ -119,19 +116,18 @@ GLfloat gCubeVertexTexCoordData[] =
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
   
   //point VBO to vertex and tex coords data
-  glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexTexCoordData), gCubeVertexTexCoordData, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(gVertexTexCoordData), gVertexTexCoordData, GL_STATIC_DRAW);
   
 
   //attrib config for the bound VBO
   glEnableVertexAttribArray(_glPositionsAttrib);
-  glVertexAttribPointer(_glPositionsAttrib, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(0));
+  glVertexAttribPointer(_glPositionsAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), BUFFER_OFFSET(0));
 
 
   //attrib config for the bound VBO
-//  glEnableVertexAttribArray(_glTexCoordAttrib);
-//  glVertexAttribPointer(_glTexCoordAttrib, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), BUFFER_OFFSET(2*sizeof(GLfloat)));
-//
-//  
+  glEnableVertexAttribArray(_glTexCoordAttrib);
+  glVertexAttribPointer(_glTexCoordAttrib, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), BUFFER_OFFSET(2*sizeof(GLfloat)));
+
   //unbind VAO
   glBindVertexArrayOES(0);}
 
@@ -151,7 +147,8 @@ GLfloat gCubeVertexTexCoordData[] =
 - (void)update
 {
   float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
-  GLKMatrix4 projectionMatrix = GLKMatrix4MakeOrtho(-10, 10, -10, 10, -1, 1);
+  float s = 3.0f;
+  GLKMatrix4 projectionMatrix = GLKMatrix4MakeOrtho(-s*aspect, s*aspect, -s, s, -1, 1);
   
   
   // Compute the model matrix for the object
@@ -171,17 +168,15 @@ GLfloat gCubeVertexTexCoordData[] =
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
   glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
   
   glBindVertexArrayOES(_vertexArray);
 
   glUseProgram(self.shaderHelper.program);
   
   glUniformMatrix4fv(_glmodelViewProjectionMatrixUniform, 1, 0, _modelViewProjectionMatrix.m);
-
   
-//  glDrawArrays(GL_TRIANGLES, 0, 6);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 }
 
